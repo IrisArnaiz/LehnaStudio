@@ -1,0 +1,2215 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LehnaStudio — Espacio de trabajo</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,400;0,600;1,300&family=Geist+Mono:wght@400;500&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #fafaf8;
+    --white: #ffffff;
+    --surface: #f4f3ef;
+    --surface2: #eeecea;
+    --border: #e5e3dd;
+    --border2: #d8d5ce;
+    --ink: #1a1916;
+    --ink2: #56524a;
+    --ink3: #a09b91;
+    --ink4: #c8c3b8;
+    --accent: #2563eb;
+    --accent-light: #eff4ff;
+    --accent-mid: #bfdbfe;
+    --green: #16a34a;
+    --green-light: #f0fdf4;
+    --amber: #b45309;
+    --amber-light: #fffbeb;
+    --red: #dc2626;
+    --red-light: #fef2f2;
+    --violet: #7c3aed;
+    --violet-light: #f5f3ff;
+    --r: 6px;
+    --r-lg: 10px;
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+    --shadow: 0 4px 12px rgba(0,0,0,0.07), 0 2px 4px rgba(0,0,0,0.04);
+    --shadow-lg: 0 12px 32px rgba(0,0,0,0.10), 0 4px 8px rgba(0,0,0,0.05);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Instrument Sans', sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    min-height: 100vh;
+    font-size: 14px;
+    line-height: 1.5;
+  }
+
+  /* ── TOPBAR ── */
+  .topbar {
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(255,255,255,0.85);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    height: 52px;
+    display: flex; align-items: center;
+    padding: 0 24px;
+    gap: 0;
+  }
+
+  .logo {
+    display: flex; align-items: center; gap: 9px;
+    margin-right: 32px; text-decoration: none;
+  }
+  .logo-mark {
+    width: 28px; height: 28px;
+    background: var(--ink);
+    border-radius: 7px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px; color: white;
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+    letter-spacing: -0.5px;
+  }
+  .logo-name {
+    font-family: 'Fraunces', serif;
+    font-weight: 600; font-size: 16px;
+    color: var(--ink); letter-spacing: -0.3px;
+  }
+
+  .nav-tabs {
+    display: flex; align-items: center; gap: 2px;
+    flex: 1;
+  }
+  .nav-tab {
+    display: flex; align-items: center; gap: 6px;
+    padding: 6px 12px;
+    border-radius: var(--r);
+    cursor: pointer;
+    color: var(--ink2);
+    font-size: 13.5px;
+    font-weight: 500;
+    transition: all 0.12s;
+    white-space: nowrap;
+    border: none; background: transparent;
+    position: relative;
+  }
+  .nav-tab:hover { background: var(--surface); color: var(--ink); }
+  .nav-tab.active {
+    background: var(--ink);
+    color: white;
+  }
+  .nav-tab .tab-icon { font-size: 14px; opacity: 0.8; }
+  .badge {
+    background: var(--accent);
+    color: white; font-size: 10px; font-weight: 600;
+    padding: 1px 5px; border-radius: 20px; min-width: 16px; text-align: center;
+  }
+  .nav-tab.active .badge { background: rgba(255,255,255,0.25); }
+
+  .topbar-right {
+    display: flex; align-items: center; gap: 8px;
+    margin-left: auto;
+  }
+  .btn {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 6px 14px; border-radius: var(--r);
+    font-family: 'Instrument Sans', sans-serif;
+    font-size: 13px; font-weight: 500;
+    cursor: pointer; border: none;
+    transition: all 0.12s;
+    white-space: nowrap;
+  }
+  .btn-ghost {
+    background: transparent; color: var(--ink2);
+    border: 1px solid var(--border2);
+  }
+  .btn-ghost:hover { background: var(--surface); color: var(--ink); }
+  .btn-dark {
+    background: var(--ink); color: white;
+    box-shadow: var(--shadow-sm);
+  }
+  .btn-dark:hover { background: #2d2a25; transform: translateY(-1px); box-shadow: var(--shadow); }
+  .btn-accent {
+    background: var(--accent); color: white;
+    box-shadow: 0 0 0 0 rgba(37,99,235,0);
+  }
+  .btn-accent:hover { background: #1d4ed8; transform: translateY(-1px); }
+
+  .avatar-sm {
+    width: 30px; height: 30px; border-radius: 50%;
+    background: linear-gradient(135deg, #1a1916, #56524a);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 600; color: white;
+    cursor: pointer; flex-shrink: 0;
+    border: 2px solid var(--border);
+  }
+
+  /* ── LAYOUT ── */
+  .app-body {
+    display: flex;
+    min-height: calc(100vh - 52px);
+  }
+
+  .main-content {
+    flex: 1;
+    padding: 32px 36px;
+    max-width: 1100px;
+    overflow-y: auto;
+  }
+
+  /* ── AI SIDE PANEL ── */
+  .ai-panel {
+    width: 300px; flex-shrink: 0;
+    background: var(--white);
+    border-left: 1px solid var(--border);
+    display: flex; flex-direction: column;
+    height: calc(100vh - 52px);
+    position: sticky; top: 52px;
+  }
+
+  .ai-panel-header {
+    padding: 16px 18px 14px;
+    border-bottom: 1px solid var(--border);
+  }
+  .ai-panel-title {
+    font-family: 'Fraunces', serif;
+    font-weight: 600; font-size: 15px;
+    display: flex; align-items: center; gap: 8px;
+    margin-bottom: 2px;
+  }
+  .ai-dot {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: var(--accent);
+    animation: blink 2s ease-in-out infinite;
+  }
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+  .ai-panel-sub { font-size: 11px; color: var(--ink3); }
+
+  .ai-messages {
+    flex: 1; overflow-y: auto;
+    padding: 14px 14px;
+    display: flex; flex-direction: column; gap: 10px;
+  }
+  .ai-messages::-webkit-scrollbar { width: 3px; }
+  .ai-messages::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
+
+  .ai-bubble {
+    padding: 10px 13px;
+    border-radius: 10px;
+    font-size: 13px; line-height: 1.6;
+    max-width: 95%;
+    animation: fadeUp 0.2s ease;
+  }
+  @keyframes fadeUp { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:translateY(0); } }
+  .ai-bubble.user {
+    background: var(--ink); color: white;
+    align-self: flex-end;
+    border-radius: 10px 10px 2px 10px;
+    font-size: 13px;
+  }
+  .ai-bubble.assistant {
+    background: var(--surface);
+    color: var(--ink2);
+    border: 1px solid var(--border);
+    align-self: flex-start;
+    border-radius: 10px 10px 10px 2px;
+  }
+  .ai-bubble.typing {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--ink3);
+    align-self: flex-start;
+    font-style: italic;
+  }
+
+  .ai-chips {
+    display: flex; flex-wrap: wrap; gap: 5px;
+    padding: 10px 14px;
+    border-top: 1px solid var(--border);
+  }
+  .chip {
+    background: var(--surface); border: 1px solid var(--border);
+    color: var(--ink2); font-size: 11px; padding: 4px 9px;
+    border-radius: 20px; cursor: pointer; transition: all 0.12s;
+    font-family: 'Instrument Sans', sans-serif;
+  }
+  .chip:hover { border-color: var(--ink); color: var(--ink); background: var(--surface2); }
+
+  .ai-input-area { padding: 10px 12px; border-top: 1px solid var(--border); }
+  .ai-input-wrap {
+    display: flex; gap: 6px; align-items: center;
+    background: var(--surface);
+    border: 1px solid var(--border2);
+    border-radius: 8px; padding: 7px 10px;
+    transition: border-color 0.15s;
+  }
+  .ai-input-wrap:focus-within { border-color: var(--accent); }
+  .ai-input {
+    flex: 1; background: transparent; border: none;
+    color: var(--ink); font-family: 'Instrument Sans', sans-serif;
+    font-size: 13px; outline: none;
+  }
+  .ai-input::placeholder { color: var(--ink4); }
+  .ai-send {
+    width: 28px; height: 28px; border-radius: 6px;
+    background: var(--ink); border: none; color: white;
+    cursor: pointer; font-size: 12px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; transition: all 0.12s;
+  }
+  .ai-send:hover { background: var(--accent); }
+  .ai-send:disabled { opacity: 0.35; cursor: not-allowed; }
+
+  /* ── VIEWS ── */
+  .view { display: none; }
+  .view.active { display: block; animation: fadeIn 0.18s ease; }
+  @keyframes fadeIn { from{opacity:0;transform:translateY(4px)} to{opacity:1;transform:translateY(0)} }
+
+  .page-header {
+    display: flex; align-items: flex-start; justify-content: space-between;
+    margin-bottom: 28px;
+  }
+  .page-title {
+    font-family: 'Fraunces', serif;
+    font-size: 26px; font-weight: 600;
+    letter-spacing: -0.5px; color: var(--ink);
+    line-height: 1.2;
+  }
+  .page-sub { font-size: 13px; color: var(--ink3); margin-top: 4px; }
+  .page-actions { display: flex; gap: 8px; align-items: center; flex-shrink: 0; }
+
+  /* ── DASHBOARD ── */
+  .stats-row {
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    gap: 12px; margin-bottom: 28px;
+  }
+  .stat-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: var(--r-lg);
+    padding: 18px 20px;
+    box-shadow: var(--shadow-sm);
+    transition: box-shadow 0.15s;
+  }
+  .stat-card:hover { box-shadow: var(--shadow); }
+  .stat-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+  .stat-label { font-size: 12px; font-weight: 500; color: var(--ink3); text-transform: uppercase; letter-spacing: 0.06em; }
+  .stat-icon { font-size: 18px; }
+  .stat-value {
+    font-family: 'Fraunces', serif;
+    font-size: 32px; font-weight: 600; line-height: 1;
+    letter-spacing: -1px; color: var(--ink);
+    margin-bottom: 5px;
+  }
+  .stat-trend { font-size: 12px; color: var(--green); font-weight: 500; }
+  .stat-trend.down { color: var(--red); }
+  .stat-trend.neutral { color: var(--ink3); }
+
+  .dash-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+
+  .card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: var(--r-lg);
+    overflow: hidden;
+    box-shadow: var(--shadow-sm);
+  }
+  .card-head {
+    padding: 14px 18px 12px;
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .card-title {
+    font-family: 'Fraunces', serif;
+    font-size: 14px; font-weight: 600; color: var(--ink);
+  }
+  .card-link { font-size: 12px; color: var(--accent); cursor: pointer; font-weight: 500; }
+  .card-link:hover { text-decoration: underline; }
+  .card-body { padding: 8px 10px; }
+
+  /* ── TASK ITEMS ── */
+  .task-row {
+    display: flex; align-items: center; gap: 10px;
+    padding: 9px 8px; border-radius: var(--r);
+    cursor: pointer; transition: background 0.1s;
+  }
+  .task-row:hover { background: var(--surface); }
+  .check-box {
+    width: 16px; height: 16px; border-radius: 4px;
+    border: 1.5px solid var(--border2);
+    flex-shrink: 0; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.15s;
+  }
+  .check-box.done { background: var(--green); border-color: var(--green); }
+  .check-box.done::after { content: '✓'; color: white; font-size: 10px; font-weight: 700; }
+  .task-label { flex: 1; font-size: 13.5px; color: var(--ink2); }
+  .task-label.done { text-decoration: line-through; color: var(--ink4); }
+  .pill {
+    font-size: 11px; font-weight: 600; padding: 2px 8px;
+    border-radius: 20px; white-space: nowrap;
+  }
+  .pill-red { background: var(--red-light); color: var(--red); }
+  .pill-amber { background: var(--amber-light); color: var(--amber); }
+  .pill-green { background: var(--green-light); color: var(--green); }
+  .pill-blue { background: var(--accent-light); color: var(--accent); }
+  .pill-violet { background: var(--violet-light); color: var(--violet); }
+  .pill-neutral { background: var(--surface2); color: var(--ink3); }
+
+  /* ── ACTIVITY ── */
+  .activity-item {
+    display: flex; align-items: flex-start; gap: 10px;
+    padding: 9px 8px; border-radius: var(--r);
+    transition: background 0.1s;
+  }
+  .activity-item:hover { background: var(--surface); }
+  .av {
+    width: 30px; height: 30px; border-radius: 50%; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 600; color: white;
+  }
+  .activity-text { flex: 1; font-size: 13px; color: var(--ink2); line-height: 1.45; }
+  .activity-text b { color: var(--ink); font-weight: 600; }
+  .activity-text .hi { color: var(--accent); }
+  .activity-time { font-size: 11px; color: var(--ink4); white-space: nowrap; }
+
+  /* ── KANBAN ── */
+  .kanban { display: grid; grid-template-columns: repeat(4,1fr); gap: 14px; align-items: start; }
+  .k-col {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-lg);
+    overflow: hidden;
+  }
+  .k-col-head {
+    padding: 11px 14px; border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; gap: 8px;
+    background: var(--white);
+  }
+  .k-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  .k-col-title { font-size: 13px; font-weight: 600; flex: 1; color: var(--ink); }
+  .k-count {
+    font-size: 11px; font-weight: 600; color: var(--ink3);
+    background: var(--surface2); padding: 1px 7px; border-radius: 10px;
+  }
+  .k-cards { padding: 10px; display: flex; flex-direction: column; gap: 7px; min-height: 50px; }
+  .k-card {
+    background: var(--white); border: 1px solid var(--border);
+    border-radius: var(--r); padding: 11px 12px;
+    cursor: pointer; transition: all 0.15s;
+    box-shadow: var(--shadow-sm);
+  }
+  .k-card:hover { border-color: var(--accent-mid); box-shadow: var(--shadow); transform: translateY(-1px); }
+  .k-card-title { font-size: 13px; color: var(--ink); line-height: 1.4; margin-bottom: 8px; font-weight: 500; }
+  .k-card-foot { display: flex; align-items: center; justify-content: space-between; }
+  .k-date { font-size: 11px; color: var(--ink3); }
+
+  /* ── DOCS ── */
+  .docs-layout { display: grid; grid-template-columns: 210px 1fr; gap: 16px; height: calc(100vh - 180px); }
+  .docs-nav {
+    background: var(--white); border: 1px solid var(--border);
+    border-radius: var(--r-lg); padding: 10px;
+    overflow-y: auto; box-shadow: var(--shadow-sm);
+  }
+  .docs-nav-label {
+    font-size: 10px; font-weight: 600; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--ink4);
+    padding: 6px 8px 8px;
+  }
+  .doc-nav-item {
+    display: flex; align-items: center; gap: 7px;
+    padding: 8px 9px; border-radius: var(--r);
+    cursor: pointer; font-size: 13px; color: var(--ink2);
+    transition: all 0.1s;
+  }
+  .doc-nav-item:hover { background: var(--surface); color: var(--ink); }
+  .doc-nav-item.active { background: var(--accent-light); color: var(--accent); font-weight: 500; }
+
+  .doc-editor {
+    background: var(--white); border: 1px solid var(--border);
+    border-radius: var(--r-lg); display: flex; flex-direction: column;
+    overflow: hidden; box-shadow: var(--shadow-sm);
+  }
+  .editor-bar {
+    padding: 10px 16px; border-bottom: 1px solid var(--border);
+    display: flex; gap: 5px; align-items: center; flex-wrap: wrap;
+  }
+  .fmt-btn {
+    background: transparent; border: 1px solid var(--border);
+    color: var(--ink2); border-radius: 5px;
+    padding: 4px 9px; cursor: pointer; font-size: 12px; font-weight: 600;
+    transition: all 0.1s; font-family: 'Instrument Sans', sans-serif;
+  }
+  .fmt-btn:hover { background: var(--surface); color: var(--ink); }
+  .fmt-btn.ai { background: var(--accent-light); color: var(--accent); border-color: var(--accent-mid); }
+  .fmt-btn.ai:hover { background: var(--accent); color: white; }
+  .editor-content { flex: 1; padding: 28px 36px; overflow-y: auto; display: flex; flex-direction: column; }
+  .doc-title-input {
+    font-family: 'Fraunces', serif; font-size: 28px; font-weight: 600;
+    color: var(--ink); background: transparent; border: none; outline: none;
+    margin-bottom: 14px; letter-spacing: -0.5px; width: 100%;
+    caret-color: var(--accent);
+  }
+  .doc-body-input {
+    font-family: 'Instrument Sans', sans-serif; font-size: 14.5px;
+    color: var(--ink2); background: transparent; border: none; outline: none;
+    resize: none; flex: 1; min-height: 300px; line-height: 1.8;
+    caret-color: var(--accent); width: 100%;
+  }
+
+  /* ── DATABASE ── */
+  .db-bar {
+    display: flex; align-items: center; gap: 10px; margin-bottom: 16px;
+  }
+  .search-wrap { position: relative; }
+  .search-icon { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); font-size: 13px; color: var(--ink3); pointer-events: none; }
+  .search-inp {
+    background: var(--white); border: 1px solid var(--border);
+    border-radius: var(--r); padding: 7px 12px 7px 32px;
+    font-family: 'Instrument Sans', sans-serif; font-size: 13px;
+    color: var(--ink); width: 220px; outline: none;
+    transition: border-color 0.15s; box-shadow: var(--shadow-sm);
+  }
+  .search-inp:focus { border-color: var(--accent); }
+
+  .db-wrap { background: var(--white); border: 1px solid var(--border); border-radius: var(--r-lg); overflow: hidden; box-shadow: var(--shadow-sm); }
+  table { width: 100%; border-collapse: collapse; }
+  thead tr { border-bottom: 1px solid var(--border); }
+  th {
+    padding: 10px 16px; text-align: left;
+    font-size: 11px; font-weight: 600; letter-spacing: 0.07em;
+    text-transform: uppercase; color: var(--ink3);
+    background: var(--surface);
+  }
+  td {
+    padding: 11px 16px; border-bottom: 1px solid var(--border);
+    font-size: 13px; color: var(--ink2);
+  }
+  tbody tr:hover td { background: var(--surface); }
+  tbody tr:last-child td { border-bottom: none; }
+
+  .status-badge {
+    display: inline-flex; align-items: center; gap: 5px;
+    padding: 3px 9px; border-radius: 20px; font-size: 11px; font-weight: 600;
+  }
+  .status-badge::before { content:''; width:5px; height:5px; border-radius:50%; background: currentColor; }
+  .sb-active { background: var(--green-light); color: var(--green); }
+  .sb-pending { background: var(--amber-light); color: var(--amber); }
+  .sb-review { background: var(--accent-light); color: var(--accent); }
+  .sb-inactive { background: var(--surface2); color: var(--ink3); }
+
+  /* ── CHAT ── */
+  .chat-layout { display: grid; grid-template-columns: 190px 1fr; height: calc(100vh - 180px); gap: 0; }
+  .chat-channels {
+    background: var(--white); border: 1px solid var(--border);
+    border-radius: var(--r-lg) 0 0 var(--r-lg);
+    padding: 12px 10px; overflow-y: auto; border-right: none;
+    box-shadow: var(--shadow-sm);
+  }
+  .ch-section { font-size: 10px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink4); padding: 6px 8px 8px; }
+  .ch-item {
+    display: flex; align-items: center; gap: 7px;
+    padding: 7px 9px; border-radius: var(--r);
+    cursor: pointer; font-size: 13px; color: var(--ink2);
+    transition: all 0.1s;
+  }
+  .ch-item:hover { background: var(--surface); color: var(--ink); }
+  .ch-item.active { background: var(--accent-light); color: var(--accent); font-weight: 500; }
+  .online { width: 6px; height: 6px; border-radius: 50%; background: var(--green); margin-left: auto; flex-shrink: 0; }
+
+  .chat-main {
+    background: var(--white); border: 1px solid var(--border);
+    border-radius: 0 var(--r-lg) var(--r-lg) 0;
+    display: flex; flex-direction: column; overflow: hidden;
+    box-shadow: var(--shadow-sm);
+  }
+  .chat-head {
+    padding: 13px 18px; border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; gap: 10px;
+  }
+  .chat-head-name { font-weight: 600; font-size: 14px; }
+  .chat-head-info { font-size: 11px; color: var(--ink3); }
+  .chat-msgs { flex: 1; overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 14px; }
+  .chat-msgs::-webkit-scrollbar { width: 4px; }
+  .chat-msgs::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
+
+  .chat-msg { display: flex; gap: 10px; }
+  .chat-msg-body { flex: 1; }
+  .msg-meta { display: flex; align-items: baseline; gap: 8px; margin-bottom: 3px; }
+  .msg-name { font-size: 13px; font-weight: 600; color: var(--ink); }
+  .msg-time { font-size: 11px; color: var(--ink4); }
+  .msg-txt { font-size: 13.5px; color: var(--ink2); line-height: 1.55; }
+  .ai-label {
+    display: inline-block; font-size: 10px; font-weight: 600;
+    background: var(--accent-light); color: var(--accent);
+    border: 1px solid var(--accent-mid);
+    padding: 1px 6px; border-radius: 4px; margin-bottom: 5px;
+    letter-spacing: 0.04em;
+  }
+
+  .chat-input-bar {
+    padding: 12px 16px; border-top: 1px solid var(--border);
+  }
+  .chat-inp-wrap {
+    display: flex; gap: 8px; align-items: flex-end;
+    background: var(--surface); border: 1px solid var(--border2);
+    border-radius: 8px; padding: 8px 12px;
+    transition: border-color 0.15s;
+  }
+  .chat-inp-wrap:focus-within { border-color: var(--accent); }
+  .chat-inp {
+    flex: 1; background: transparent; border: none;
+    color: var(--ink); font-family: 'Instrument Sans', sans-serif;
+    font-size: 13.5px; outline: none; resize: none;
+    max-height: 100px; line-height: 1.5;
+  }
+  .chat-inp::placeholder { color: var(--ink4); }
+  .send-btn {
+    width: 32px; height: 32px; border-radius: 7px;
+    background: var(--ink); border: none; color: white;
+    cursor: pointer; font-size: 14px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; transition: all 0.12s;
+  }
+  .send-btn:hover { background: var(--accent); }
+  .send-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+
+  /* ── MODAL ── */
+  .modal-bg {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.3); backdrop-filter: blur(3px);
+    display: none; align-items: center; justify-content: center; z-index: 999;
+  }
+  .modal-bg.open { display: flex; }
+  .modal {
+    background: var(--white); border: 1px solid var(--border);
+    border-radius: var(--r-lg); padding: 26px; width: 450px; max-width: 92vw;
+    box-shadow: var(--shadow-lg);
+    animation: fadeUp 0.2s ease;
+  }
+  .modal h3 {
+    font-family: 'Fraunces', serif; font-size: 19px; font-weight: 600;
+    margin-bottom: 20px; letter-spacing: -0.3px;
+  }
+  .form-group { margin-bottom: 14px; }
+  .form-label { display: block; font-size: 12px; font-weight: 600; color: var(--ink2); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.05em; }
+  .form-input, .form-select, .form-textarea {
+    width: 100%; background: var(--surface); border: 1px solid var(--border2);
+    border-radius: var(--r); padding: 8px 12px;
+    font-family: 'Instrument Sans', sans-serif; font-size: 13.5px; color: var(--ink);
+    outline: none; transition: border-color 0.15s;
+  }
+  .form-input:focus, .form-select:focus, .form-textarea:focus { border-color: var(--accent); background: var(--white); }
+  .form-textarea { resize: vertical; min-height: 75px; line-height: 1.5; }
+  .form-select { appearance: none; cursor: pointer; }
+  .modal-footer { display: flex; gap: 8px; justify-content: flex-end; margin-top: 22px; }
+
+  .divider { height: 1px; background: var(--border); margin: 5px 0; }
+
+  .mono { font-family: 'Geist Mono', monospace; }
+
+  /* Scrollbar global */
+  ::-webkit-scrollbar { width: 5px; height: 5px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 10px; }
+
+  /* ── CALENDAR ── */
+  .cal-weekday {
+    padding: 10px 0; text-align: center;
+    font-size: 11px; font-weight: 600; letter-spacing: 0.07em;
+    text-transform: uppercase; color: var(--ink3);
+    background: var(--surface);
+  }
+  .cal-cell {
+    min-height: 90px; padding: 6px;
+    border-right: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    cursor: pointer; transition: background 0.1s;
+    position: relative; vertical-align: top;
+  }
+  .cal-cell:nth-child(7n) { border-right: none; }
+  .cal-cell:hover { background: var(--surface); }
+  .cal-cell.today { background: var(--accent-light); }
+  .cal-cell.today .cal-day-num { background: var(--accent); color: white; }
+  .cal-cell.selected { background: #eff4ff; outline: 2px solid var(--accent-mid); outline-offset: -1px; }
+  .cal-cell.other-month .cal-day-num { color: var(--ink4); }
+  .cal-cell.other-month { background: var(--bg); }
+  .cal-day-num {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 24px; height: 24px; border-radius: 50%;
+    font-size: 12px; font-weight: 600; color: var(--ink2);
+    margin-bottom: 4px;
+  }
+  .cal-event-dot {
+    display: block; font-size: 10.5px; font-weight: 500;
+    padding: 2px 6px; border-radius: 4px; margin-bottom: 2px;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    cursor: pointer; line-height: 1.4;
+  }
+  .cal-event-dot.meeting { background: var(--accent-light); color: var(--accent); }
+  .cal-event-dot.deadline { background: var(--red-light); color: var(--red); }
+  .cal-event-dot.reminder { background: var(--amber-light); color: var(--amber); }
+  .cal-event-dot.event { background: var(--violet-light); color: var(--violet); }
+  .cal-event-dot.task { background: var(--green-light); color: var(--green); }
+
+  .upcoming-item {
+    display: flex; align-items: flex-start; gap: 10px;
+    padding: 9px 8px; border-radius: var(--r);
+    transition: background 0.1s; cursor: pointer;
+  }
+  .upcoming-item:hover { background: var(--surface); }
+  .upcoming-date-box {
+    width: 36px; flex-shrink: 0; text-align: center;
+    background: var(--surface2); border-radius: var(--r);
+    padding: 4px 0;
+  }
+  .upcoming-day { font-size: 16px; font-weight: 700; font-family: 'Fraunces', serif; color: var(--ink); line-height: 1; }
+  .upcoming-mon { font-size: 9px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.07em; color: var(--ink3); }
+  .upcoming-info { flex: 1; }
+  .upcoming-title { font-size: 13px; font-weight: 500; color: var(--ink); }
+  .upcoming-meta { font-size: 11px; color: var(--ink3); margin-top: 2px; }
+
+  .detail-event-item {
+    display: flex; align-items: center; gap: 8px;
+    padding: 7px 0; border-bottom: 1px solid var(--border);
+  }
+  .detail-event-item:last-child { border-bottom: none; }
+  .detail-ev-time { font-size: 11px; color: var(--ink3); width: 38px; flex-shrink: 0; font-family: 'Geist Mono', monospace; }
+  .detail-ev-title { font-size: 13px; color: var(--ink2); flex: 1; }
+
+  /* ── NOTIFICATIONS ── */
+  .notif-btn {
+    position: relative;
+    width: 34px; height: 34px; border-radius: var(--r);
+    background: transparent; border: 1px solid var(--border2);
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; font-size: 16px; color: var(--ink2);
+    transition: all 0.12s; flex-shrink: 0;
+  }
+  .notif-btn:hover { background: var(--surface); color: var(--ink); }
+  .notif-btn.has-new { color: var(--ink); border-color: var(--accent-mid); background: var(--accent-light); }
+  .notif-dot {
+    position: absolute; top: 5px; right: 5px;
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--red); border: 2px solid white;
+    animation: notif-pop 0.3s cubic-bezier(.34,1.56,.64,1);
+  }
+  @keyframes notif-pop { from{transform:scale(0)} to{transform:scale(1)} }
+
+  .notif-panel {
+    position: fixed; top: 58px; right: 16px;
+    width: 360px; max-height: 520px;
+    background: var(--white); border: 1px solid var(--border);
+    border-radius: var(--r-lg); box-shadow: var(--shadow-lg);
+    z-index: 500; display: none; flex-direction: column;
+    overflow: hidden; animation: slideDown 0.18s ease;
+  }
+  .notif-panel.open { display: flex; }
+  @keyframes slideDown { from{opacity:0;transform:translateY(-8px)} to{opacity:1;transform:translateY(0)} }
+
+  .notif-panel-head {
+    padding: 14px 16px 12px;
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .notif-panel-title {
+    font-family: 'Fraunces', serif; font-size: 15px; font-weight: 600;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .notif-count-badge {
+    background: var(--red); color: white;
+    font-size: 10px; font-weight: 700;
+    padding: 1px 6px; border-radius: 10px;
+    font-family: 'Instrument Sans', sans-serif;
+  }
+  .notif-mark-all {
+    font-size: 11px; color: var(--accent); cursor: pointer; font-weight: 500;
+    background: none; border: none; font-family: 'Instrument Sans', sans-serif;
+  }
+  .notif-mark-all:hover { text-decoration: underline; }
+
+  .notif-tabs {
+    display: flex; border-bottom: 1px solid var(--border);
+    padding: 0 12px;
+  }
+  .notif-tab {
+    padding: 8px 12px; font-size: 12px; font-weight: 500;
+    color: var(--ink3); cursor: pointer; border: none; background: none;
+    border-bottom: 2px solid transparent; margin-bottom: -1px;
+    font-family: 'Instrument Sans', sans-serif; transition: all 0.12s;
+  }
+  .notif-tab:hover { color: var(--ink); }
+  .notif-tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+  .notif-list { overflow-y: auto; flex: 1; }
+  .notif-list::-webkit-scrollbar { width: 3px; }
+  .notif-list::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
+
+  .notif-item {
+    display: flex; align-items: flex-start; gap: 10px;
+    padding: 12px 16px; cursor: pointer;
+    border-bottom: 1px solid var(--border);
+    transition: background 0.1s; position: relative;
+  }
+  .notif-item:last-child { border-bottom: none; }
+  .notif-item:hover { background: var(--surface); }
+  .notif-item.unread { background: var(--accent-light); }
+  .notif-item.unread:hover { background: #e0ecff; }
+  .unread-bar {
+    position: absolute; left: 0; top: 0; bottom: 0;
+    width: 3px; background: var(--accent); border-radius: 0 2px 2px 0;
+  }
+  .notif-icon-wrap {
+    width: 36px; height: 36px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 15px; flex-shrink: 0;
+  }
+  .notif-body { flex: 1; min-width: 0; }
+  .notif-text {
+    font-size: 13px; color: var(--ink2); line-height: 1.45;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .notif-text b { color: var(--ink); font-weight: 600; }
+  .notif-time { font-size: 11px; color: var(--ink4); margin-top: 3px; }
+  .notif-action-row { display: flex; gap: 6px; margin-top: 6px; }
+  .notif-action {
+    font-size: 11px; font-weight: 500; padding: 3px 9px;
+    border-radius: 5px; cursor: pointer; border: none;
+    font-family: 'Instrument Sans', sans-serif; transition: all 0.12s;
+  }
+  .notif-action.primary { background: var(--accent); color: white; }
+  .notif-action.primary:hover { background: #1d4ed8; }
+  .notif-action.ghost { background: var(--surface2); color: var(--ink2); }
+  .notif-action.ghost:hover { background: var(--border2); color: var(--ink); }
+
+  .notif-empty {
+    padding: 40px 20px; text-align: center; color: var(--ink3);
+  }
+  .notif-empty-icon { font-size: 32px; margin-bottom: 10px; }
+  .notif-empty-text { font-size: 13px; }
+
+  .notif-panel-foot {
+    padding: 10px 16px; border-top: 1px solid var(--border);
+    display: flex; justify-content: center;
+  }
+  .notif-panel-foot button {
+    font-size: 12px; color: var(--accent); background: none;
+    border: none; cursor: pointer; font-family: 'Instrument Sans', sans-serif;
+    font-weight: 500;
+  }
+  .notif-panel-foot button:hover { text-decoration: underline; }
+
+  /* Toast */
+  .toast-container {
+    position: fixed; bottom: 20px; right: 20px;
+    display: flex; flex-direction: column; gap: 8px;
+    z-index: 9999; pointer-events: none;
+  }
+  .toast {
+    background: var(--ink); color: white;
+    padding: 12px 16px; border-radius: var(--r-lg);
+    box-shadow: var(--shadow-lg); max-width: 320px;
+    display: flex; align-items: flex-start; gap: 10px;
+    pointer-events: all; cursor: pointer;
+    animation: toastIn 0.3s cubic-bezier(.34,1.56,.64,1);
+    font-size: 13px; line-height: 1.4;
+  }
+  .toast.hiding { animation: toastOut 0.25s ease forwards; }
+  @keyframes toastIn { from{opacity:0;transform:translateY(12px) scale(0.95)} to{opacity:1;transform:translateY(0) scale(1)} }
+  @keyframes toastOut { to{opacity:0;transform:translateY(8px) scale(0.95)} }
+  .toast-icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+  .toast-msg { flex: 1; }
+  .toast-title { font-weight: 600; margin-bottom: 2px; }
+  .toast-body { font-size: 12px; opacity: 0.75; }
+  .toast-close { opacity: 0.5; font-size: 14px; cursor: pointer; flex-shrink: 0; }
+  .toast-close:hover { opacity: 1; }
+
+  /* ── TIME TRACKING ── */
+
+  /* Summary cards */
+  .time-summary-card {
+    background: var(--white); border: 1px solid var(--border);
+    border-radius: var(--r-lg); overflow: hidden; box-shadow: var(--shadow-sm);
+  }
+  .time-sum-row {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 10px 16px; border-bottom: 1px solid var(--border);
+    font-size: 13px;
+  }
+  .time-sum-row:last-child { border-bottom: none; }
+  .time-sum-label { color: var(--ink2); }
+  .time-sum-val { font-family: 'Geist Mono', monospace; font-weight: 600; color: var(--ink); }
+  .time-sum-val.accent { color: var(--accent); }
+
+  .time-bar-row {
+    padding: 12px 16px; border-bottom: 1px solid var(--border);
+  }
+  .time-bar-label { display: flex; justify-content: space-between; font-size: 12px; color: var(--ink2); margin-bottom: 5px; }
+  .time-bar-track { height: 6px; background: var(--surface2); border-radius: 3px; overflow: hidden; }
+  .time-bar-fill { height: 100%; border-radius: 3px; transition: width 0.5s ease; }
+
+  .week-grid {
+    display: grid; grid-template-columns: repeat(7,1fr); gap: 4px;
+    padding: 14px 16px;
+  }
+  .week-day { text-align: center; }
+  .week-day-name { font-size: 9px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.07em; color: var(--ink4); margin-bottom: 4px; }
+  .week-day-bar { height: 40px; background: var(--surface2); border-radius: 3px; overflow: hidden; display: flex; align-items: flex-end; }
+  .week-day-fill { width: 100%; border-radius: 3px; transition: height 0.5s ease; }
+  .week-day-val { font-size: 9px; color: var(--ink3); margin-top: 3px; text-align: center; }
+
+  @keyframes loading { 0%,100%{content:'.'} 33%{content:'..'} 66%{content:'...'} }
+  .loading-dots::after { content: '.'; animation: loading 1.2s infinite; }
+</style>
+</head>
+<body>
+
+<!-- TOP NAV -->
+<header class="topbar">
+  <a class="logo">
+    <div class="logo-mark">L</div>
+    <span class="logo-name">LehnaStudio</span>
+  </a>
+
+  <nav class="nav-tabs">
+    <button class="nav-tab active" onclick="goTo('dashboard', this)">
+      <span class="tab-icon">⌂</span> Inicio
+    </button>
+    <button class="nav-tab" onclick="goTo('tasks', this)">
+      <span class="tab-icon">✓</span> Tareas
+      <span class="badge" id="task-badge">5</span>
+    </button>
+    <button class="nav-tab" onclick="goTo('kanban', this)">
+      <span class="tab-icon">⊞</span> Proyectos
+    </button>
+    <button class="nav-tab" onclick="goTo('docs', this)">
+      <span class="tab-icon">◻</span> Docs
+    </button>
+    <button class="nav-tab" onclick="goTo('database', this)">
+      <span class="tab-icon">⊟</span> Base de datos
+    </button>
+    <button class="nav-tab" onclick="goTo('chat', this)">
+      <span class="tab-icon">◯</span> Chat
+      <span class="badge">3</span>
+    </button>
+    <button class="nav-tab" onclick="goTo('calendar', this)">
+      <span class="tab-icon">📅</span> Calendario
+    </button>
+    <button class="nav-tab" onclick="goTo('time', this)">
+      <span class="tab-icon">⏱</span> Tiempo
+    </button>
+  </nav>
+
+  <div class="topbar-right">
+    <button class="btn btn-ghost" onclick="openModal()">+ Tarea</button>
+    <!-- NOTIFICATION BELL -->
+    <div style="position:relative">
+      <button class="notif-btn has-new" id="notif-btn" onclick="toggleNotifPanel()" title="Notificaciones">
+        🔔
+        <span class="notif-dot" id="notif-dot"></span>
+      </button>
+    </div>
+    <button class="btn btn-dark" onclick="focusAI()">✦ IA</button>
+    <div class="avatar-sm" title="Jefe García">JG</div>
+  </div>
+</header>
+
+<!-- NOTIFICATION PANEL -->
+<div class="notif-panel" id="notif-panel">
+  <div class="notif-panel-head">
+    <div class="notif-panel-title">
+      Notificaciones
+      <span class="notif-count-badge" id="notif-count-badge">4</span>
+    </div>
+    <button class="notif-mark-all" onclick="markAllRead()">Marcar todo leído</button>
+  </div>
+  <div class="notif-tabs">
+    <button class="notif-tab active" onclick="filterNotifs('all',this)">Todas</button>
+    <button class="notif-tab" onclick="filterNotifs('unread',this)">Sin leer</button>
+    <button class="notif-tab" onclick="filterNotifs('task',this)">Tareas</button>
+    <button class="notif-tab" onclick="filterNotifs('mention',this)">Menciones</button>
+  </div>
+  <div class="notif-list" id="notif-list"></div>
+  <div class="notif-panel-foot">
+    <button onclick="clearAllNotifs()">Eliminar todas las notificaciones</button>
+  </div>
+</div>
+
+<!-- TOAST CONTAINER -->
+<div class="toast-container" id="toast-container"></div>
+
+<div class="app-body">
+  <div class="main-content">
+
+    <!-- DASHBOARD -->
+    <div class="view active" id="view-dashboard">
+      <div class="page-header">
+        <div>
+          <div class="page-title">Buenos días, Jefe García</div>
+          <div class="page-sub">Miércoles, 11 de marzo · Bienvenido a LehnaStudio</div>
+        </div>
+        <div class="page-actions">
+          <button class="btn btn-ghost" onclick="openModal()">+ Nueva tarea</button>
+        </div>
+      </div>
+
+      <div class="stats-row">
+        <div class="stat-card">
+          <div class="stat-top">
+            <span class="stat-label">Pendientes</span>
+            <span class="stat-icon">📌</span>
+          </div>
+          <div class="stat-value" id="s-pending">5</div>
+          <div class="stat-trend">↑ 2 esta semana</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-top">
+            <span class="stat-label">Completadas</span>
+            <span class="stat-icon">✅</span>
+          </div>
+          <div class="stat-value" id="s-done">12</div>
+          <div class="stat-trend">↑ 4 esta semana</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-top">
+            <span class="stat-label">Proyectos</span>
+            <span class="stat-icon">📁</span>
+          </div>
+          <div class="stat-value">3</div>
+          <div class="stat-trend neutral">1 en revisión</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-top">
+            <span class="stat-label">Equipo</span>
+            <span class="stat-icon">👥</span>
+          </div>
+          <div class="stat-value">6</div>
+          <div class="stat-trend">5 activos hoy</div>
+        </div>
+      </div>
+
+      <div class="dash-grid">
+        <div class="card">
+          <div class="card-head">
+            <span class="card-title">Tareas recientes</span>
+            <span class="card-link" onclick="goToByName('tasks')">Ver todo →</span>
+          </div>
+          <div class="card-body" id="dash-task-list"></div>
+        </div>
+        <div class="card">
+          <div class="card-head">
+            <span class="card-title">Actividad del equipo</span>
+          </div>
+          <div class="card-body">
+            <div class="activity-item">
+              <div class="av" style="background:linear-gradient(135deg,#7c3aed,#a855f7)">MR</div>
+              <div class="activity-text"><b>María R.</b> completó <span class="hi">"Diseño landing"</span></div>
+              <span class="activity-time">15 min</span>
+            </div>
+            <div class="activity-item">
+              <div class="av" style="background:linear-gradient(135deg,#16a34a,#15803d)">PL</div>
+              <div class="activity-text"><b>Pedro L.</b> creó <span class="hi">"Plan Q3"</span></div>
+              <span class="activity-time">1 h</span>
+            </div>
+            <div class="activity-item">
+              <div class="av" style="background:linear-gradient(135deg,#d97706,#b45309)">AL</div>
+              <div class="activity-text"><b>Ana L.</b> comentó en <span class="hi">"App móvil"</span></div>
+              <span class="activity-time">2 h</span>
+            </div>
+            <div class="activity-item">
+              <div class="av" style="background:linear-gradient(135deg,#2563eb,#1d4ed8)">CR</div>
+              <div class="activity-text"><b>Carlos R.</b> actualizó la BD de clientes</div>
+              <span class="activity-time">3 h</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TASKS -->
+    <div class="view" id="view-tasks">
+      <div class="page-header">
+        <div>
+          <div class="page-title">Tareas</div>
+          <div class="page-sub" id="tasks-sub">5 pendientes · 2 completadas hoy</div>
+        </div>
+        <button class="btn btn-dark" onclick="openModal()">+ Nueva tarea</button>
+      </div>
+      <div class="card">
+        <div class="card-body" id="tasks-list" style="padding:8px"></div>
+      </div>
+    </div>
+
+    <!-- KANBAN -->
+    <div class="view" id="view-kanban">
+      <div class="page-header">
+        <div>
+          <div class="page-title">Proyectos</div>
+          <div class="page-sub">Vista Kanban · 3 proyectos activos</div>
+        </div>
+        <button class="btn btn-dark" onclick="openModal()">+ Nueva tarea</button>
+      </div>
+      <div class="kanban" id="kanban-board"></div>
+    </div>
+
+    <!-- DOCS -->
+    <div class="view" id="view-docs">
+      <div class="page-header">
+        <div>
+          <div class="page-title">Documentos</div>
+          <div class="page-sub">5 documentos · Último editado hace 1 hora</div>
+        </div>
+        <button class="btn btn-dark" onclick="addDoc()">+ Nuevo doc</button>
+      </div>
+      <div class="docs-layout">
+        <div class="docs-nav">
+          <div class="docs-nav-label">Todos los docs</div>
+          <div id="docs-nav-list"></div>
+        </div>
+        <div class="doc-editor">
+          <div class="editor-bar">
+            <button class="fmt-btn" onclick="execCmd('bold')"><b>B</b></button>
+            <button class="fmt-btn" onclick="execCmd('italic')"><i>I</i></button>
+            <button class="fmt-btn" onclick="execCmd('underline')"><u>U</u></button>
+            <div style="width:1px;height:18px;background:var(--border);margin:0 4px"></div>
+            <button class="fmt-btn ai" onclick="aiImproveDoc()">✦ Mejorar con IA</button>
+          </div>
+          <div class="editor-content">
+            <input class="doc-title-input" id="doc-title" placeholder="Título del documento..." value="Plan de Marketing Q3">
+            <textarea class="doc-body-input" id="doc-body" placeholder="Empieza a escribir...">Este documento describe el plan de marketing para el tercer trimestre del año.
+
+Objetivos principales:
+- Aumentar el tráfico web en un 40%
+- Generar 200 nuevos leads cualificados
+- Lanzar campaña en redes sociales
+
+Estrategia de contenidos:
+Publicar 3 artículos de blog por semana enfocados en SEO, crear contenido en video para LinkedIn e Instagram, y desarrollar 2 webinars mensuales para captación de leads.</textarea>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- DATABASE -->
+    <div class="view" id="view-database">
+      <div class="page-header">
+        <div>
+          <div class="page-title">Base de datos</div>
+          <div class="page-sub">Clientes · 6 registros</div>
+        </div>
+        <button class="btn btn-dark" onclick="addRecord()">+ Nuevo registro</button>
+      </div>
+      <div class="db-bar">
+        <div class="search-wrap">
+          <span class="search-icon">⌕</span>
+          <input class="search-inp" id="db-search" placeholder="Buscar..." oninput="filterDB(this.value)">
+        </div>
+        <button class="btn btn-ghost">↕ Ordenar</button>
+        <button class="btn btn-ghost">⊟ Filtrar</button>
+      </div>
+      <div class="db-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Nombre</th><th>Empresa</th><th>Email</th>
+              <th>Estado</th><th>Valor</th><th>Responsable</th>
+            </tr>
+          </thead>
+          <tbody id="db-body"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- CHAT -->
+    <div class="view" id="view-chat">
+      <div class="page-header">
+        <div>
+          <div class="page-title">Chat del equipo</div>
+          <div class="page-sub">6 miembros · 5 activos ahora</div>
+        </div>
+      </div>
+      <div class="chat-layout">
+        <div class="chat-channels">
+          <div class="ch-section">Canales</div>
+          <div class="ch-item active" onclick="setChannel('general',this)"># general <span class="online"></span></div>
+          <div class="ch-item" onclick="setChannel('marketing',this)"># marketing</div>
+          <div class="ch-item" onclick="setChannel('desarrollo',this)"># desarrollo</div>
+          <div class="ch-item" onclick="setChannel('ai-bot',this)">✦ AI Assistant</div>
+          <div class="ch-section" style="margin-top:10px">Directos</div>
+          <div class="ch-item" onclick="setChannel('maria',this)">
+            <div class="av" style="width:22px;height:22px;font-size:9px;background:linear-gradient(135deg,#7c3aed,#a855f7)">MR</div>
+            María R. <span class="online"></span>
+          </div>
+          <div class="ch-item" onclick="setChannel('pedro',this)">
+            <div class="av" style="width:22px;height:22px;font-size:9px;background:linear-gradient(135deg,#16a34a,#15803d)">PL</div>
+            Pedro L.
+          </div>
+        </div>
+        <div class="chat-main">
+          <div class="chat-head">
+            <span style="font-size:16px;color:var(--ink3)">#</span>
+            <div>
+              <div class="chat-head-name" id="ch-name">general</div>
+              <div class="chat-head-info">6 miembros</div>
+            </div>
+          </div>
+          <div class="chat-msgs" id="chat-msgs"></div>
+          <div class="chat-input-bar">
+            <div class="chat-inp-wrap">
+              <textarea class="chat-inp" id="chat-inp" rows="1"
+                placeholder="Escribe un mensaje... usa @IA para hablar con la IA"
+                onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendMsg()}"
+                oninput="this.style.height='auto';this.style.height=this.scrollHeight+'px'"></textarea>
+              <button class="send-btn" onclick="sendMsg()" id="chat-send">➤</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CALENDAR -->
+    <div class="view" id="view-calendar">
+      <div class="page-header">
+        <div>
+          <div class="page-title" id="cal-title">Marzo 2026</div>
+          <div class="page-sub">Vista mensual · tareas y eventos del equipo</div>
+        </div>
+        <div class="page-actions">
+          <button class="btn btn-ghost" onclick="calPrev()">← Anterior</button>
+          <button class="btn btn-ghost" onclick="calToday()">Hoy</button>
+          <button class="btn btn-ghost" onclick="calNext()">Siguiente →</button>
+          <button class="btn btn-dark" onclick="openEventModal()">+ Evento</button>
+        </div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 260px;gap:18px;align-items:start">
+        <!-- MONTHLY GRID -->
+        <div class="card" style="overflow:visible">
+          <div id="cal-weekdays" style="display:grid;grid-template-columns:repeat(7,1fr);border-bottom:1px solid var(--border)"></div>
+          <div id="cal-grid" style="display:grid;grid-template-columns:repeat(7,1fr)"></div>
+        </div>
+
+        <!-- SIDEBAR: day detail + upcoming -->
+        <div style="display:flex;flex-direction:column;gap:14px">
+          <div class="card">
+            <div class="card-head">
+              <span class="card-title" id="cal-detail-title">Selecciona un día</span>
+            </div>
+            <div class="card-body" id="cal-detail-body" style="padding:10px 12px;min-height:80px">
+              <div style="color:var(--ink4);font-size:13px;padding:10px 0">Haz clic en un día para ver sus eventos y tareas.</div>
+            </div>
+            <div style="padding:10px 12px;border-top:1px solid var(--border)" id="cal-detail-actions" style="display:none"></div>
+          </div>
+
+          <div class="card">
+            <div class="card-head"><span class="card-title">Próximos eventos</span></div>
+            <div class="card-body" id="cal-upcoming" style="padding:8px 10px"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TIME TRACKING -->
+    <div class="view" id="view-time">
+      <div class="page-header">
+        <div>
+          <div class="page-title">Seguimiento de tiempo</div>
+          <div class="page-sub">Resumen semanal del equipo</div>
+        </div>
+        <div class="page-actions">
+          <button class="btn btn-dark" onclick="exportTime()">↓ Exportar CSV</button>
+        </div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:18px;margin-bottom:18px">
+        <!-- Resumen hoy -->
+        <div class="time-summary-card">
+          <div class="card-head"><span class="card-title">Resumen de hoy</span></div>
+          <div class="time-sum-row">
+            <span class="time-sum-label">⏱ Tiempo total</span>
+            <span class="time-sum-val accent" id="sum-total">4h 30m</span>
+          </div>
+          <div class="time-sum-row">
+            <span class="time-sum-label">📋 Sesiones</span>
+            <span class="time-sum-val" id="sum-entries">3</span>
+          </div>
+          <div class="time-sum-row">
+            <span class="time-sum-label">🎯 Objetivo diario</span>
+            <span class="time-sum-val">8h 0m</span>
+          </div>
+          <div style="padding:12px 16px;border-top:1px solid var(--border)">
+            <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--ink2);margin-bottom:6px">
+              <span>Progreso</span><span id="sum-pct">56%</span>
+            </div>
+            <div style="height:8px;background:var(--surface2);border-radius:4px;overflow:hidden">
+              <div id="sum-progress-bar" style="height:100%;width:56%;background:var(--accent);border-radius:4px;transition:width 0.5s ease"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tiempo por tarea -->
+        <div class="time-summary-card">
+          <div class="card-head"><span class="card-title">Tiempo por tarea — hoy</span></div>
+          <div id="time-by-task" style="padding:8px 0"></div>
+        </div>
+
+        <!-- Esta semana -->
+        <div class="time-summary-card">
+          <div class="card-head"><span class="card-title">Esta semana</span></div>
+          <div class="week-grid" id="week-grid"></div>
+          <div style="padding:0 16px 12px;text-align:center">
+            <span style="font-family:'Fraunces',serif;font-size:22px;font-weight:600;color:var(--ink)" id="week-total-label">31h</span>
+            <span style="font-size:11px;color:var(--ink3);margin-left:6px">de 40h objetivo</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Rendimiento por persona -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:18px">
+        <div class="time-summary-card">
+          <div class="card-head"><span class="card-title">Horas por persona esta semana</span></div>
+          <div id="time-by-member" style="padding:8px 16px"></div>
+        </div>
+
+        <!-- Distribución por tipo -->
+        <div class="time-summary-card">
+          <div class="card-head"><span class="card-title">Distribución por categoría</span></div>
+          <div id="time-by-category" style="padding:8px 0"></div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /main-content -->
+
+  <!-- EVENT MODAL -->
+  <div class="modal-bg" id="event-modal">
+    <div class="modal">
+      <h3>Nuevo evento</h3>
+      <div class="form-group">
+        <label class="form-label">Título</label>
+        <input class="form-input" id="ev-title" placeholder="Nombre del evento...">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Fecha</label>
+        <input class="form-input" type="date" id="ev-date">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Hora</label>
+        <input class="form-input" type="time" id="ev-time" value="10:00">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Tipo</label>
+        <select class="form-select" id="ev-type">
+          <option value="meeting">📅 Reunión</option>
+          <option value="deadline">🔴 Fecha límite</option>
+          <option value="reminder">🔔 Recordatorio</option>
+          <option value="event">🎯 Evento</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Notas</label>
+        <textarea class="form-textarea" id="ev-notes" placeholder="Detalles..."></textarea>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" onclick="closeEventModal()">Cancelar</button>
+        <button class="btn btn-dark" onclick="createEvent()">Crear evento</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- AI PANEL -->
+  <aside class="ai-panel">
+    <div class="ai-panel-header">
+      <div class="ai-panel-title"><div class="ai-dot"></div> Asistente IA</div>
+      <div class="ai-panel-sub">Claude · Siempre disponible</div>
+    </div>
+    <div class="ai-messages" id="ai-msgs">
+      <div class="ai-bubble assistant">
+        Hola 👋 Soy tu asistente de LehnaStudio. Puedo ayudarte a organizar tareas, redactar documentos, analizar tu equipo o responder cualquier pregunta. ¿En qué te ayudo hoy?
+      </div>
+    </div>
+    <div class="ai-chips">
+      <span class="chip" onclick="quickAI('Dame un resumen de las tareas pendientes')">📌 Resumen</span>
+      <span class="chip" onclick="quickAI('Redacta un email profesional para un cliente')">✉️ Email</span>
+      <span class="chip" onclick="quickAI('¿Cómo mejorar la productividad del equipo?')">🚀 Consejos</span>
+      <span class="chip" onclick="quickAI('Genera ideas para el próximo sprint')">💡 Ideas</span>
+    </div>
+    <div class="ai-input-area">
+      <div class="ai-input-wrap">
+        <input class="ai-input" id="ai-inp" placeholder="Pregunta algo..."
+          onkeydown="if(event.key==='Enter')askAI()">
+        <button class="ai-send" id="ai-send-btn" onclick="askAI()">➤</button>
+      </div>
+    </div>
+  </aside>
+</div>
+
+<!-- MODAL -->
+<div class="modal-bg" id="task-modal">
+  <div class="modal">
+    <h3>Nueva tarea</h3>
+    <div class="form-group">
+      <label class="form-label">Título</label>
+      <input class="form-input" id="t-title" placeholder="¿Qué hay que hacer?">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Prioridad</label>
+      <select class="form-select" id="t-prio">
+        <option value="alta">Alta</option>
+        <option value="media" selected>Media</option>
+        <option value="baja">Baja</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Columna</label>
+      <select class="form-select" id="t-col">
+        <option value="backlog">Backlog</option>
+        <option value="progreso">En progreso</option>
+        <option value="revision">Revisión</option>
+        <option value="hecho">Hecho</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Descripción</label>
+      <textarea class="form-textarea" id="t-desc" placeholder="Detalles adicionales..."></textarea>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal()">Cancelar</button>
+      <button class="btn btn-dark" onclick="createTask()">Crear tarea</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── STATE ──
+let currentView = 'dashboard';
+let currentChannel = 'general';
+let aiTyping = false;
+
+const tasks = [
+  {id:1, title:'Diseñar landing page nueva', priority:'alta', col:'progreso', done:false, date:'12 Mar'},
+  {id:2, title:'Revisar propuesta de cliente', priority:'alta', col:'revision', done:false, date:'13 Mar'},
+  {id:3, title:'Actualizar base de datos', priority:'media', col:'backlog', done:false, date:'15 Mar'},
+  {id:4, title:'Reunión semanal del equipo', priority:'media', col:'hecho', done:true, date:'10 Mar'},
+  {id:5, title:'Preparar informe mensual', priority:'baja', col:'progreso', done:false, date:'20 Mar'},
+  {id:6, title:'Configurar integración API', priority:'alta', col:'backlog', done:false, date:'18 Mar'},
+  {id:7, title:'Campaña email newsletter', priority:'media', col:'revision', done:false, date:'14 Mar'},
+];
+
+const dbRows = [
+  {name:'Empresa Alfa SL', company:'Tech', email:'alfa@ejemplo.com', status:'active', value:'€12,000', resp:'María R.'},
+  {name:'Beta Consulting', company:'Consultoría', email:'beta@ejemplo.com', status:'pending', value:'€8,500', resp:'Pedro L.'},
+  {name:'Gamma Digital', company:'Marketing', email:'gamma@ejemplo.com', status:'review', value:'€23,000', resp:'Ana L.'},
+  {name:'Delta Systems', company:'Software', email:'delta@ejemplo.com', status:'active', value:'€45,000', resp:'Carlos R.'},
+  {name:'Epsilon Group', company:'Retail', email:'epsilon@ejemplo.com', status:'inactive', value:'€3,200', resp:'María R.'},
+  {name:'Zeta Partners', company:'Finanzas', email:'zeta@ejemplo.com', status:'active', value:'€67,000', resp:'Jefe G.'},
+];
+
+const docsData = [
+  {id:1, title:'Plan de Marketing Q3', icon:'📊'},
+  {id:2, title:'Manual de empleados', icon:'📖'},
+  {id:3, title:'Propuesta cliente ABC', icon:'📝'},
+  {id:4, title:'OKRs 2025', icon:'🎯'},
+  {id:5, title:'Acta reunión Marzo', icon:'📋'},
+];
+
+const chatData = {
+  general: [
+    {author:'María R.', av:'MR', bg:'linear-gradient(135deg,#7c3aed,#a855f7)', time:'9:14', text:'Buenos días equipo! Maquetas listas para revisar 🎨'},
+    {author:'Pedro L.', av:'PL', bg:'linear-gradient(135deg,#16a34a,#15803d)', time:'9:22', text:'Perfecto, las reviso en un rato. ¿Están en el drive?'},
+    {author:'María R.', av:'MR', bg:'linear-gradient(135deg,#7c3aed,#a855f7)', time:'9:25', text:'Sí, carpeta "Diseños Q3". Subí 4 versiones.'},
+    {author:'Carlos R.', av:'CR', bg:'linear-gradient(135deg,#2563eb,#1d4ed8)', time:'10:01', text:'Actualicé la BD de clientes con los nuevos registros.'},
+  ],
+  'ai-bot': [{author:'AI Assistant', av:'✦', bg:'linear-gradient(135deg,#1a1916,#56524a)', time:'', text:'¡Hola! Soy el asistente IA. Puedes usar @IA en cualquier canal o hablar conmigo aquí directamente.', isAI:true}],
+  marketing: [{author:'Ana L.', av:'AL', bg:'linear-gradient(135deg,#d97706,#b45309)', time:'8:45', text:'Tasa de apertura del email: 32% 📈 ¡Excelente!'}],
+  desarrollo: [{author:'Carlos R.', av:'CR', bg:'linear-gradient(135deg,#2563eb,#1d4ed8)', time:'11:30', text:'Deploy listo. Todo en producción ✓'}],
+  maria: [{author:'María R.', av:'MR', bg:'linear-gradient(135deg,#7c3aed,#a855f7)', time:'9:00', text:'¿Tienes un momento para las maquetas antes del mediodía?'}],
+  pedro: [],
+};
+
+// ── NAV ──
+function goTo(name, el) {
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('view-' + name).classList.add('active');
+  el.classList.add('active');
+  currentView = name;
+  render(name);
+}
+function goToByName(name) {
+  const btn = [...document.querySelectorAll('.nav-tab')].find(b => b.onclick?.toString().includes(name));
+  if(btn) goTo(name, btn);
+}
+
+// ── RENDER ──
+function render(v) {
+  if(v==='dashboard') renderDash();
+  if(v==='tasks') renderTasks();
+  if(v==='kanban') renderKanban();
+  if(v==='docs') renderDocs();
+  if(v==='database') renderDB(dbRows);
+  if(v==='chat') renderChatMsgs();
+  if(v==='calendar') renderCalendar();
+  if(v==='time') renderTimeView();
+}
+
+function renderDash() {
+  const pending = tasks.filter(t=>!t.done).length;
+  document.getElementById('s-pending').textContent = pending;
+  document.getElementById('s-done').textContent = tasks.filter(t=>t.done).length;
+  document.getElementById('task-badge').textContent = pending;
+  document.getElementById('dash-task-list').innerHTML = tasks.slice(0,5).map(t => taskHTML(t, true)).join('');
+}
+
+function renderTasks() {
+  const pending = tasks.filter(t=>!t.done).length;
+  document.getElementById('tasks-sub').textContent = `${pending} pendientes · ${tasks.filter(t=>t.done).length} completadas`;
+  document.getElementById('task-badge').textContent = pending;
+  document.getElementById('tasks-list').innerHTML = tasks.map(t => taskHTML(t, false)).join('');
+}
+
+function taskHTML(t, compact) {
+  const prioClass = {alta:'pill-red', media:'pill-amber', baja:'pill-green'}[t.priority];
+  return `<div class="task-row">
+    <div class="check-box ${t.done?'done':''}" onclick="toggleTask(${t.id})"></div>
+    <span class="task-label ${t.done?'done':''}">${t.title}</span>
+    <span class="pill ${prioClass}">${t.priority}</span>
+    ${!compact ? `<span class="pill pill-neutral">${t.col}</span><span style="font-size:11px;color:var(--ink4)">${t.date}</span>` : ''}
+  </div>`;
+}
+
+function renderKanban() {
+  const cols = [
+    {id:'backlog', title:'Backlog', color:'#a09b91'},
+    {id:'progreso', title:'En progreso', color:'#2563eb'},
+    {id:'revision', title:'Revisión', color:'#d97706'},
+    {id:'hecho', title:'Hecho', color:'#16a34a'},
+  ];
+  document.getElementById('kanban-board').innerHTML = cols.map(c => {
+    const ct = tasks.filter(t => t.col === c.id);
+    return `<div class="k-col">
+      <div class="k-col-head">
+        <div class="k-dot" style="background:${c.color}"></div>
+        <span class="k-col-title">${c.title}</span>
+        <span class="k-count">${ct.length}</span>
+      </div>
+      <div class="k-cards">
+        ${ct.map(t => {
+          const pc = {alta:'pill-red', media:'pill-amber', baja:'pill-green'}[t.priority];
+          return `<div class="k-card">
+            <div class="k-card-title">${t.title}</div>
+            <div class="k-card-foot">
+              <span class="pill ${pc}">${t.priority}</span>
+              <span class="k-date">${t.date}</span>
+            </div>
+          </div>`;
+        }).join('')}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function renderDocs() {
+  document.getElementById('docs-nav-list').innerHTML = docsData.map((d,i) => `
+    <div class="doc-nav-item ${i===0?'active':''}" onclick="loadDoc(${d.id}, this)">
+      ${d.icon} ${d.title}
+    </div>
+  `).join('');
+}
+
+function loadDoc(id, el) {
+  document.querySelectorAll('.doc-nav-item').forEach(d=>d.classList.remove('active'));
+  el.classList.add('active');
+  const doc = docsData.find(d=>d.id===id);
+  document.getElementById('doc-title').value = doc.title;
+  document.getElementById('doc-body').value = `Contenido de "${doc.title}".\n\nEmpieza a escribir o usa ✦ Mejorar con IA para que Claude redacte por ti.`;
+}
+
+function renderDB(rows) {
+  const map = {active:['sb-active','Activo'], pending:['sb-pending','Pendiente'], review:['sb-review','Revisión'], inactive:['sb-inactive','Inactivo']};
+  document.getElementById('db-body').innerHTML = rows.map(r => {
+    const [cls, label] = map[r.status]||['sb-inactive','—'];
+    return `<tr>
+      <td><b>${r.name}</b></td>
+      <td>${r.company}</td>
+      <td style="color:var(--ink3)" class="mono" style="font-size:12px">${r.email}</td>
+      <td><span class="status-badge ${cls}">${label}</span></td>
+      <td style="font-weight:600;color:var(--green)">${r.value}</td>
+      <td>${r.resp}</td>
+    </tr>`;
+  }).join('');
+}
+
+function filterDB(q) {
+  renderDB(dbRows.filter(r =>
+    [r.name,r.company,r.email].some(f=>f.toLowerCase().includes(q.toLowerCase()))
+  ));
+}
+
+function renderChatMsgs() {
+  const msgs = chatData[currentChannel]||[];
+  const c = document.getElementById('chat-msgs');
+  c.innerHTML = msgs.map(m => `
+    <div class="chat-msg">
+      <div class="av" style="width:32px;height:32px;font-size:11px;flex-shrink:0;background:${m.bg||'#ccc'}">${m.av}</div>
+      <div class="chat-msg-body">
+        <div class="msg-meta">
+          <span class="msg-name">${m.author}</span>
+          ${m.time?`<span class="msg-time">${m.time}</span>`:''}
+        </div>
+        ${m.isAI?'<div class="ai-label">AI</div>':''}
+        <div class="msg-txt">${m.text}</div>
+      </div>
+    </div>
+  `).join('');
+  c.scrollTop = c.scrollHeight;
+}
+
+// ── INTERACTIONS ──
+function toggleTask(id) {
+  const t = tasks.find(t=>t.id===id);
+  if(t) t.done = !t.done;
+  render(currentView);
+}
+
+function openModal() { document.getElementById('task-modal').classList.add('open'); document.getElementById('t-title').focus(); }
+function closeModal() { document.getElementById('task-modal').classList.remove('open'); }
+
+function createTask() {
+  const title = document.getElementById('t-title').value.trim();
+  if(!title) return;
+  tasks.unshift({id:Date.now(), title, priority:document.getElementById('t-prio').value, col:document.getElementById('t-col').value, done:false, date:'Hoy'});
+  closeModal();
+  render(currentView);
+  ['t-title','t-desc'].forEach(id => document.getElementById(id).value='');
+}
+
+function addDoc() {
+  const title = prompt('Nombre del documento:');
+  if(title) { docsData.push({id:Date.now(), title, icon:'📄'}); renderDocs(); }
+}
+
+function addRecord() {
+  const name = prompt('Nombre del cliente/empresa:');
+  if(name) { dbRows.push({name, company:'Nueva', email:'email@ejemplo.com', status:'pending', value:'€0', resp:'Sin asignar'}); renderDB(dbRows); }
+}
+
+function setChannel(ch, el) {
+  currentChannel = ch;
+  document.querySelectorAll('.ch-item').forEach(c=>c.classList.remove('active'));
+  el.classList.add('active');
+  const names = {general:'general', marketing:'marketing', desarrollo:'desarrollo', 'ai-bot':'✦ AI Assistant', maria:'María R.', pedro:'Pedro L.'};
+  document.getElementById('ch-name').textContent = names[ch]||ch;
+  renderChatMsgs();
+}
+
+async function sendMsg() {
+  const inp = document.getElementById('chat-inp');
+  const text = inp.value.trim();
+  if(!text||aiTyping) return;
+  inp.value=''; inp.style.height='auto';
+
+  if(!chatData[currentChannel]) chatData[currentChannel]=[];
+  chatData[currentChannel].push({author:'Tú', av:'JG', bg:'linear-gradient(135deg,#1a1916,#56524a)', time: now(), text});
+  renderChatMsgs();
+
+  if(text.toLowerCase().startsWith('@ia') || currentChannel==='ai-bot') {
+    aiTyping=true;
+    const prompt = text.replace(/^@ia\s*/i,'') || text;
+    chatData[currentChannel].push({author:'AI Assistant', av:'✦', bg:'linear-gradient(135deg,#1a1916,#56524a)', time:'', text:'<span class="loading-dots">Pensando</span>', isAI:true});
+    renderChatMsgs();
+    const reply = await claude(prompt);
+    chatData[currentChannel].pop();
+    chatData[currentChannel].push({author:'AI Assistant', av:'✦', bg:'linear-gradient(135deg,#1a1916,#56524a)', time:now(), text:reply, isAI:true});
+    aiTyping=false;
+    renderChatMsgs();
+  }
+}
+
+function execCmd(cmd) { document.execCommand(cmd); }
+
+async function aiImproveDoc() {
+  const title = document.getElementById('doc-title').value;
+  const body = document.getElementById('doc-body').value;
+  if(!body.trim()) return;
+  addBubble('user','✦ Mejorando: '+title);
+  addBubble('typing','<span class="loading-dots">Redactando</span>');
+  const reply = await claude(`Mejora y expande este documento empresarial de forma profesional. Título: "${title}"\n\n${body}`);
+  removeBubble('typing');
+  addBubble('assistant','✅ Listo. El documento ha sido mejorado.');
+  document.getElementById('doc-body').value = reply;
+}
+
+function focusAI() { document.getElementById('ai-inp').focus(); }
+function quickAI(p) { document.getElementById('ai-inp').value=p; askAI(); }
+
+async function askAI() {
+  const inp = document.getElementById('ai-inp');
+  const prompt = inp.value.trim();
+  if(!prompt||aiTyping) return;
+  inp.value='';
+  document.getElementById('ai-send-btn').disabled=true;
+  addBubble('user', prompt);
+  addBubble('typing','<span class="loading-dots">Analizando</span>');
+  const sys = `Eres el asistente de LehnaStudio, una app de gestión para equipos pequeños. Tareas pendientes: ${tasks.filter(t=>!t.done).map(t=>t.title).join(', ')}. Sé conciso y práctico. Responde en español.`;
+  const reply = await claude(prompt, sys);
+  removeBubble('typing');
+  addBubble('assistant', reply);
+  document.getElementById('ai-send-btn').disabled=false;
+}
+
+function addBubble(type, text) {
+  const c = document.getElementById('ai-msgs');
+  const d = document.createElement('div');
+  d.className = `ai-bubble ${type}`;
+  d.innerHTML = text;
+  if(type==='typing') d.id='typing-bbl';
+  c.appendChild(d);
+  c.scrollTop = c.scrollHeight;
+}
+function removeBubble(type) { const b=document.getElementById('typing-bbl'); if(b)b.remove(); }
+
+async function claude(userPrompt, systemPrompt='Eres un asistente empresarial conciso y útil. Responde siempre en español.') {
+  try {
+    const r = await fetch('https://api.anthropic.com/v1/messages', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({
+        model:'claude-sonnet-4-20250514',
+        max_tokens:1000,
+        system: systemPrompt,
+        messages:[{role:'user', content:userPrompt}]
+      })
+    });
+    const d = await r.json();
+    return d.content?.[0]?.text || 'Sin respuesta.';
+  } catch(e) {
+    return '⚠️ No se pudo conectar con la IA.';
+  }
+}
+
+function now() { return new Date().toLocaleTimeString('es',{hour:'2-digit',minute:'2-digit'}); }
+
+// ── CALENDAR ──
+const MONTHS_ES = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+const DAYS_ES = ['Lun','Mar','Mié','Jue','Vie','Sáb','Dom'];
+
+let calDate = new Date(2026, 2, 1); // March 2026
+let selectedDay = null;
+
+const calEvents = [
+  {id:1, title:'Reunión con cliente', date:'2026-03-11', time:'10:00', type:'meeting', notes:'Presentar propuesta Q2'},
+  {id:2, title:'Entrega diseño landing', date:'2026-03-13', time:'18:00', type:'deadline', notes:''},
+  {id:3, title:'Sprint planning', date:'2026-03-16', time:'09:30', type:'meeting', notes:'Equipo completo'},
+  {id:4, title:'Webinar marketing', date:'2026-03-18', time:'16:00', type:'event', notes:''},
+  {id:5, title:'Review informe mensual', date:'2026-03-20', time:'11:00', type:'reminder', notes:''},
+  {id:6, title:'Cierre propuesta Gamma', date:'2026-03-25', time:'17:00', type:'deadline', notes:''},
+  {id:7, title:'Retrospectiva sprint', date:'2026-03-27', time:'15:00', type:'meeting', notes:''},
+  {id:8, title:'Deadline newsletter', date:'2026-03-14', time:'12:00', type:'deadline', notes:''},
+  {id:9, title:'Onboarding nuevo empleado', date:'2026-04-01', time:'09:00', type:'event', notes:''},
+];
+
+function renderCalendar() {
+  const y = calDate.getFullYear(), m = calDate.getMonth();
+  document.getElementById('cal-title').textContent = `${MONTHS_ES[m]} ${y}`;
+
+  // Weekday headers
+  document.getElementById('cal-weekdays').innerHTML = DAYS_ES.map(d =>
+    `<div class="cal-weekday">${d}</div>`
+  ).join('');
+
+  // Calculate cells
+  const first = new Date(y, m, 1);
+  const last = new Date(y, m+1, 0);
+  // Monday-first: 0=Mon,...,6=Sun
+  let startDow = (first.getDay() + 6) % 7;
+  const today = new Date();
+
+  let cells = '';
+  let day = 1 - startDow;
+
+  for(let row = 0; row < 6; row++) {
+    for(let col = 0; col < 7; col++, day++) {
+      const cellDate = new Date(y, m, day);
+      const isThisMonth = cellDate.getMonth() === m;
+      const isToday = cellDate.toDateString() === today.toDateString();
+      const dateStr = cellDate.toISOString().split('T')[0];
+      const isSelected = selectedDay === dateStr;
+
+      // Events for this cell
+      const dayEvents = calEvents.filter(e => e.date === dateStr);
+      // Tasks with date matching
+      const taskNames = {'12 Mar':'2026-03-12','13 Mar':'2026-03-13','15 Mar':'2026-03-15','20 Mar':'2026-03-20','18 Mar':'2026-03-18','14 Mar':'2026-03-14','10 Mar':'2026-03-10'};
+      const dayTasks = tasks.filter(t => taskNames[t.date] === dateStr && !t.done);
+
+      const evDots = dayEvents.slice(0,2).map(e =>
+        `<span class="cal-event-dot ${e.type}" title="${e.title}">${e.time} ${e.title}</span>`
+      ).join('');
+      const taskDots = dayTasks.slice(0, Math.max(0, 2 - dayEvents.length)).map(t =>
+        `<span class="cal-event-dot task" title="${t.title}">✓ ${t.title}</span>`
+      ).join('');
+      const more = (dayEvents.length + dayTasks.length) > 2
+        ? `<span style="font-size:10px;color:var(--ink3);padding:0 6px">+${dayEvents.length + dayTasks.length - 2} más</span>` : '';
+
+      cells += `<div class="cal-cell ${!isThisMonth?'other-month':''} ${isToday?'today':''} ${isSelected?'selected':''}"
+        onclick="selectDay('${dateStr}', ${cellDate.getDate()})">
+        <div class="cal-day-num">${cellDate.getDate()}</div>
+        ${evDots}${taskDots}${more}
+      </div>`;
+    }
+    if(day > last.getDate() + 1 && row >= 4) break;
+  }
+  document.getElementById('cal-grid').innerHTML = cells;
+  renderUpcoming();
+}
+
+function selectDay(dateStr, dayNum) {
+  selectedDay = dateStr;
+  renderCalendar();
+
+  const date = new Date(dateStr + 'T12:00:00');
+  const label = `${dayNum} de ${MONTHS_ES[date.getMonth()]}`;
+  document.getElementById('cal-detail-title').textContent = label;
+
+  const dayEvents = calEvents.filter(e => e.date === dateStr);
+  const taskMap = {'2026-03-12':'12 Mar','2026-03-13':'13 Mar','2026-03-15':'15 Mar','2026-03-20':'20 Mar','2026-03-18':'18 Mar','2026-03-14':'14 Mar','2026-03-10':'10 Mar'};
+  const dayTasks = tasks.filter(t => taskMap[dateStr] === t.date && !t.done);
+
+  const typeIcons = {meeting:'📅',deadline:'🔴',reminder:'🔔',event:'🎯',task:'✅'};
+
+  let html = '';
+  if(!dayEvents.length && !dayTasks.length) {
+    html = `<div style="color:var(--ink4);font-size:13px;padding:8px 0">Sin eventos ni tareas este día.</div>
+      <button class="btn btn-ghost" style="margin-top:8px;font-size:12px" onclick="openEventModalDate('${dateStr}')">+ Añadir evento</button>`;
+  } else {
+    html = [...dayEvents.map(e => `
+      <div class="detail-event-item">
+        <span class="detail-ev-time">${e.time}</span>
+        <span style="font-size:14px">${typeIcons[e.type]||'📌'}</span>
+        <span class="detail-ev-title">${e.title}</span>
+        <span class="pill ${e.type==='deadline'?'pill-red':e.type==='meeting'?'pill-blue':e.type==='reminder'?'pill-amber':'pill-violet'}" style="font-size:10px">${e.type}</span>
+      </div>
+    `), ...dayTasks.map(t => `
+      <div class="detail-event-item">
+        <span class="detail-ev-time">—</span>
+        <span style="font-size:14px">✅</span>
+        <span class="detail-ev-title">${t.title}</span>
+        <span class="pill pill-green" style="font-size:10px">tarea</span>
+      </div>
+    `)].join('');
+    html += `<button class="btn btn-ghost" style="margin-top:10px;font-size:12px;width:100%" onclick="openEventModalDate('${dateStr}')">+ Añadir evento</button>`;
+  }
+  document.getElementById('cal-detail-body').innerHTML = html;
+}
+
+function renderUpcoming() {
+  const today = new Date();
+  const upcoming = calEvents
+    .filter(e => new Date(e.date + 'T' + e.time) >= today)
+    .sort((a,b) => new Date(a.date+' '+a.time) - new Date(b.date+' '+b.time))
+    .slice(0, 5);
+
+  const typeIcons = {meeting:'📅',deadline:'🔴',reminder:'🔔',event:'🎯'};
+  document.getElementById('cal-upcoming').innerHTML = upcoming.map(e => {
+    const d = new Date(e.date + 'T12:00:00');
+    return `<div class="upcoming-item" onclick="selectDay('${e.date}', ${d.getDate()})">
+      <div class="upcoming-date-box">
+        <div class="upcoming-day">${d.getDate()}</div>
+        <div class="upcoming-mon">${MONTHS_ES[d.getMonth()].slice(0,3)}</div>
+      </div>
+      <div class="upcoming-info">
+        <div class="upcoming-title">${typeIcons[e.type]||'📌'} ${e.title}</div>
+        <div class="upcoming-meta">${e.time}${e.notes?' · '+e.notes:''}</div>
+      </div>
+    </div>`;
+  }).join('') || '<div style="color:var(--ink4);font-size:13px;padding:8px">Sin próximos eventos.</div>';
+}
+
+function calPrev() { calDate.setMonth(calDate.getMonth()-1); renderCalendar(); }
+function calNext() { calDate.setMonth(calDate.getMonth()+1); renderCalendar(); }
+function calToday() { calDate = new Date(); calDate.setDate(1); renderCalendar(); }
+
+function openEventModal() {
+  const today = new Date().toISOString().split('T')[0];
+  document.getElementById('ev-date').value = selectedDay || today;
+  document.getElementById('ev-title').value = '';
+  document.getElementById('ev-notes').value = '';
+  document.getElementById('event-modal').classList.add('open');
+  document.getElementById('ev-title').focus();
+}
+
+function openEventModalDate(dateStr) {
+  document.getElementById('ev-date').value = dateStr;
+  document.getElementById('ev-title').value = '';
+  document.getElementById('ev-notes').value = '';
+  document.getElementById('event-modal').classList.add('open');
+  document.getElementById('ev-title').focus();
+}
+
+function closeEventModal() { document.getElementById('event-modal').classList.remove('open'); }
+
+function createEvent() {
+  const title = document.getElementById('ev-title').value.trim();
+  const date = document.getElementById('ev-date').value;
+  const time = document.getElementById('ev-time').value;
+  const type = document.getElementById('ev-type').value;
+  const notes = document.getElementById('ev-notes').value.trim();
+  if(!title || !date) return;
+  calEvents.push({id: Date.now(), title, date, time, type, notes});
+  closeEventModal();
+  renderCalendar();
+  if(selectedDay === date) selectDay(date, new Date(date+'T12:00:00').getDate());
+}
+
+// ── TIME TRACKING ──
+const weekData = [
+  { day:'Lun', hours:6.5 },
+  { day:'Mar', hours:7.8 },
+  { day:'Mié', hours:5.2 },
+  { day:'Jue', hours:8.1 },
+  { day:'Vie', hours:3.5 },
+  { day:'Sáb', hours:0 },
+  { day:'Dom', hours:0 },
+];
+
+const todayByTask = [
+  { task:'Diseñar landing page', duration:5400, color:'#2563eb' },
+  { task:'Revisar propuesta cliente', duration:3600, color:'#7c3aed' },
+  { task:'Reunión semanal', duration:3600, color:'#16a34a' },
+];
+
+const memberHours = [
+  { name:'María R.',  av:'MR', bg:'linear-gradient(135deg,#7c3aed,#a855f7)', hours:38 },
+  { name:'Pedro L.',  av:'PL', bg:'linear-gradient(135deg,#16a34a,#15803d)', hours:32 },
+  { name:'Ana L.',    av:'AL', bg:'linear-gradient(135deg,#d97706,#b45309)', hours:29 },
+  { name:'Carlos R.', av:'CR', bg:'linear-gradient(135deg,#2563eb,#1d4ed8)', hours:36 },
+  { name:'Laura M.',  av:'LM', bg:'linear-gradient(135deg,#dc2626,#b91c1c)', hours:22 },
+];
+
+const categoryData = [
+  { label:'Desarrollo', hours:58, color:'#2563eb' },
+  { label:'Reuniones',  hours:22, color:'#7c3aed' },
+  { label:'Diseño',     hours:18, color:'#16a34a' },
+  { label:'Administración', hours:12, color:'#d97706' },
+  { label:'Revisiones', hours:8, color:'#dc2626' },
+];
+
+function fmtDur(s) {
+  const h = Math.floor(s/3600), m = Math.floor((s%3600)/60);
+  return h > 0 ? `${h}h ${m}m` : `${m}m`;
+}
+
+function renderTimeView() {
+  // Summary card
+  const total = todayByTask.reduce((s,e)=>s+e.duration,0);
+  const goal = 8*3600;
+  const pct = Math.min(Math.round(total/goal*100),100);
+  document.getElementById('sum-total').textContent = fmtDur(total);
+  document.getElementById('sum-entries').textContent = todayByTask.length;
+  document.getElementById('sum-pct').textContent = pct+'%';
+  document.getElementById('sum-progress-bar').style.width = pct+'%';
+  document.getElementById('sum-progress-bar').style.background = pct>=100?'var(--green)':pct>=60?'var(--accent)':'var(--amber)';
+
+  // By task bars
+  const maxT = Math.max(...todayByTask.map(t=>t.duration),1);
+  document.getElementById('time-by-task').innerHTML = todayByTask.map(t=>`
+    <div class="time-bar-row">
+      <div class="time-bar-label">
+        <span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:160px">${t.task}</span>
+        <span style="font-weight:600;font-family:'Geist Mono',monospace">${fmtDur(t.duration)}</span>
+      </div>
+      <div class="time-bar-track">
+        <div class="time-bar-fill" style="width:${Math.round(t.duration/maxT*100)}%;background:${t.color}"></div>
+      </div>
+    </div>
+  `).join('');
+
+  // Week heatmap
+  const maxH = Math.max(...weekData.map(d=>d.hours),1);
+  const weekTotal = weekData.reduce((s,d)=>s+d.hours,0);
+  document.getElementById('week-total-label').textContent = weekTotal.toFixed(0)+'h';
+  document.getElementById('week-grid').innerHTML = weekData.map((d,i)=>{
+    const isToday = i===2;
+    const pct = Math.round(d.hours/maxH*100);
+    return `<div class="week-day">
+      <div class="week-day-name" style="${isToday?'color:var(--accent)':''}">${d.day}</div>
+      <div class="week-day-bar">
+        <div class="week-day-fill" style="height:${pct}%;background:${isToday?'var(--accent)':'var(--accent-mid)'}"></div>
+      </div>
+      <div class="week-day-val">${d.hours>0?d.hours+'h':'—'}</div>
+    </div>`;
+  }).join('');
+
+  // By member
+  const maxM = Math.max(...memberHours.map(m=>m.hours),1);
+  document.getElementById('time-by-member').innerHTML = memberHours.map(m=>`
+    <div class="perf-row">
+      <div class="perf-av" style="background:${m.bg}">${m.av}</div>
+      <div class="perf-name">${m.name.split(' ')[0]}</div>
+      <div class="perf-bar-wrap">
+        <div class="perf-bar" style="width:${Math.round(m.hours/maxM*100)}%;background:${m.bg.match(/#\w+/)[0]}"></div>
+      </div>
+      <div class="perf-num">${m.hours}h</div>
+    </div>
+  `).join('');
+
+  // By category
+  const maxC = Math.max(...categoryData.map(c=>c.hours),1);
+  document.getElementById('time-by-category').innerHTML = categoryData.map(c=>`
+    <div class="time-bar-row">
+      <div class="time-bar-label">
+        <span>${c.label}</span>
+        <span style="font-weight:600;font-family:'Geist Mono',monospace">${c.hours}h</span>
+      </div>
+      <div class="time-bar-track">
+        <div class="time-bar-fill" style="width:${Math.round(c.hours/maxC*100)}%;background:${c.color}"></div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function exportTime() {
+  const rows = ['Tarea,Duración', ...todayByTask.map(t=>`"${t.task}","${fmtDur(t.duration)}"`)]
+    .concat(['','Miembro,Horas semana'], memberHours.map(m=>`"${m.name}","${m.hours}h"`))
+    .join('\n');
+  const blob = new Blob([rows],{type:'text/csv'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'lehnastudio-tiempo.csv';
+  a.click();
+  showToast('↓','Exportado','Archivo CSV descargado');
+}
+
+// ── NOTIFICATIONS ──
+let notifFilter = 'all';
+
+const notifications = [
+  {
+    id:1, type:'task', unread:true,
+    icon:'✅', iconBg:'#f0fdf4', iconColor:'#16a34a',
+    title:'Tarea completada',
+    text:'<b>María R.</b> completó "Diseño landing page nueva"',
+    time:'Hace 15 min', actions:[
+      {label:'Ver tarea', primary:true, fn:'goToByName(\'tasks\')'},
+    ]
+  },
+  {
+    id:2, type:'mention', unread:true,
+    icon:'💬', iconBg:'#eff4ff', iconColor:'#2563eb',
+    title:'Te han mencionado',
+    text:'<b>Pedro L.</b> te mencionó en #general: "¿@Jefe apruebas el presupuesto?"',
+    time:'Hace 32 min', actions:[
+      {label:'Responder', primary:true, fn:'goToByName(\'chat\')'},
+      {label:'Ignorar', primary:false, fn:'dismissNotif(2)'},
+    ]
+  },
+  {
+    id:3, type:'task', unread:true,
+    icon:'⏰', iconBg:'#fffbeb', iconColor:'#d97706',
+    title:'Fecha límite próxima',
+    text:'La tarea <b>"Revisar propuesta de cliente"</b> vence mañana a las 18:00',
+    time:'Hace 1 hora', actions:[
+      {label:'Ver tarea', primary:true, fn:'goToByName(\'tasks\')'},
+    ]
+  },
+  {
+    id:4, type:'mention', unread:true,
+    icon:'🔔', iconBg:'#f5f3ff', iconColor:'#7c3aed',
+    title:'Nuevo comentario',
+    text:'<b>Ana L.</b> comentó en el documento "Plan de Marketing Q3"',
+    time:'Hace 2 horas', actions:[
+      {label:'Ver doc', primary:true, fn:'goToByName(\'docs\')'},
+    ]
+  },
+  {
+    id:5, type:'task', unread:false,
+    icon:'➕', iconBg:'#f4f3ef', iconColor:'#56524a',
+    title:'Tarea asignada',
+    text:'<b>Carlos R.</b> te asignó "Configurar integración API"',
+    time:'Hace 3 horas', actions:[
+      {label:'Ver tarea', primary:true, fn:'goToByName(\'tasks\')'},
+    ]
+  },
+  {
+    id:6, type:'task', unread:false,
+    icon:'📅', iconBg:'#eff4ff', iconColor:'#2563eb',
+    title:'Recordatorio de evento',
+    text:'Reunión <b>"Sprint planning"</b> el lunes 16 Mar a las 09:30',
+    time:'Hace 5 horas', actions:[
+      {label:'Ver calendario', primary:true, fn:'goToByName(\'calendar\')'},
+    ]
+  },
+  {
+    id:7, type:'mention', unread:false,
+    icon:'📊', iconBg:'#f0fdf4', iconColor:'#16a34a',
+    title:'Reporte disponible',
+    text:'El reporte semanal de productividad está listo para revisar.',
+    time:'Ayer', actions:[
+      {label:'Ver reportes', primary:true, fn:'goToByName(\'reports\')'},
+    ]
+  },
+];
+
+function getFilteredNotifs() {
+  if(notifFilter === 'unread') return notifications.filter(n => n.unread);
+  if(notifFilter === 'task') return notifications.filter(n => n.type === 'task');
+  if(notifFilter === 'mention') return notifications.filter(n => n.type === 'mention');
+  return notifications;
+}
+
+function renderNotifPanel() {
+  const filtered = getFilteredNotifs();
+  const unreadCount = notifications.filter(n => n.unread).length;
+
+  // Update badge
+  const badge = document.getElementById('notif-count-badge');
+  const dot = document.getElementById('notif-dot');
+  const btn = document.getElementById('notif-btn');
+  badge.textContent = unreadCount;
+  badge.style.display = unreadCount > 0 ? '' : 'none';
+  dot.style.display = unreadCount > 0 ? '' : 'none';
+  btn.classList.toggle('has-new', unreadCount > 0);
+
+  if(!filtered.length) {
+    document.getElementById('notif-list').innerHTML = `
+      <div class="notif-empty">
+        <div class="notif-empty-icon">🎉</div>
+        <div class="notif-empty-text">Sin notificaciones por aquí</div>
+      </div>`;
+    return;
+  }
+
+  document.getElementById('notif-list').innerHTML = filtered.map(n => `
+    <div class="notif-item ${n.unread?'unread':''}" onclick="readNotif(${n.id})" id="notif-item-${n.id}">
+      ${n.unread ? '<div class="unread-bar"></div>' : ''}
+      <div class="notif-icon-wrap" style="background:${n.iconBg}">
+        <span style="font-size:16px">${n.icon}</span>
+      </div>
+      <div class="notif-body">
+        <div class="notif-text">${n.text}</div>
+        <div class="notif-time">${n.time}</div>
+        ${n.actions && n.actions.length ? `
+          <div class="notif-action-row">
+            ${n.actions.map(a => `
+              <button class="notif-action ${a.primary?'primary':'ghost'}"
+                onclick="event.stopPropagation();${a.fn};closeNotifPanel()">
+                ${a.label}
+              </button>`).join('')}
+          </div>` : ''}
+      </div>
+    </div>
+  `).join('');
+}
+
+function toggleNotifPanel() {
+  const panel = document.getElementById('notif-panel');
+  panel.classList.toggle('open');
+  if(panel.classList.contains('open')) renderNotifPanel();
+}
+
+function closeNotifPanel() {
+  document.getElementById('notif-panel').classList.remove('open');
+}
+
+function filterNotifs(f, el) {
+  notifFilter = f;
+  document.querySelectorAll('.notif-tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  renderNotifPanel();
+}
+
+function readNotif(id) {
+  const n = notifications.find(n => n.id === id);
+  if(n) n.unread = false;
+  renderNotifPanel();
+}
+
+function dismissNotif(id) {
+  const idx = notifications.findIndex(n => n.id === id);
+  if(idx > -1) notifications.splice(idx, 1);
+  renderNotifPanel();
+}
+
+function markAllRead() {
+  notifications.forEach(n => n.unread = false);
+  renderNotifPanel();
+}
+
+function clearAllNotifs() {
+  notifications.length = 0;
+  renderNotifPanel();
+}
+
+// ── TOAST SYSTEM ──
+function showToast(icon, title, body, duration = 4500) {
+  const container = document.getElementById('toast-container');
+  const id = 'toast-' + Date.now();
+  const toast = document.createElement('div');
+  toast.className = 'toast';
+  toast.id = id;
+  toast.innerHTML = `
+    <div class="toast-icon">${icon}</div>
+    <div class="toast-msg">
+      <div class="toast-title">${title}</div>
+      ${body ? `<div class="toast-body">${body}</div>` : ''}
+    </div>
+    <div class="toast-close" onclick="dismissToast('${id}')">✕</div>
+  `;
+  toast.addEventListener('click', () => dismissToast(id));
+  container.appendChild(toast);
+  setTimeout(() => dismissToast(id), duration);
+}
+
+function dismissToast(id) {
+  const toast = document.getElementById(id);
+  if(!toast) return;
+  toast.classList.add('hiding');
+  setTimeout(() => toast.remove(), 250);
+}
+
+// Simulate incoming notifications
+function simulateNotif() {
+  const sims = [
+    {icon:'💬', title:'Nuevo mensaje', body:'Pedro L. en #general: "¿Cuándo es la reunión?"'},
+    {icon:'✅', title:'Tarea completada', body:'Ana L. completó "Campaña email newsletter"'},
+    {icon:'⚠️', title:'Deadline mañana', body:'"Informe mensual" vence en 24 horas'},
+    {icon:'👋', title:'Nueva mención', body:'Carlos R. te mencionó en #desarrollo'},
+  ];
+  let i = 0;
+  const intervals = [6000, 14000, 23000, 35000];
+  intervals.forEach((delay, idx) => {
+    setTimeout(() => {
+      const s = sims[idx];
+      showToast(s.icon, s.title, s.body);
+      // Also add to notification list
+      notifications.unshift({
+        id: Date.now(), type: idx % 2 === 0 ? 'mention' : 'task',
+        unread: true, icon: s.icon, iconBg:'#eff4ff', iconColor:'#2563eb',
+        title: s.title, text: `<b>${s.body}</b>`, time: 'Ahora mismo', actions:[]
+      });
+      renderNotifPanel();
+    }, delay);
+  });
+}
+
+// Close notif panel when clicking outside
+document.addEventListener('click', e => {
+  const panel = document.getElementById('notif-panel');
+  const btn = document.getElementById('notif-btn');
+  if(panel.classList.contains('open') && !panel.contains(e.target) && !btn.contains(e.target)) {
+    closeNotifPanel();
+  }
+});
+
+// ── INIT ──
+renderDash();
+renderNotifPanel();
+simulateNotif();
+document.getElementById('task-modal').addEventListener('click', e => { if(e.target===e.currentTarget) closeModal(); });
+document.getElementById('event-modal').addEventListener('click', e => { if(e.target===e.currentTarget) closeEventModal(); });
+document.addEventListener('keydown', e => { if(e.key==='Escape') { closeModal(); closeEventModal(); closeNotifPanel(); } });
+</script>
+</body>
+</html>
